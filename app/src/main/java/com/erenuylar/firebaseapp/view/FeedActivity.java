@@ -45,7 +45,6 @@ public class FeedActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ArrayList<Post> postArrayList;
     private PostAdapter postAdapter;
-    private String downloadUrlProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,28 +89,26 @@ public class FeedActivity extends AppCompatActivity {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy  HH:mm", Locale.getDefault());
                         String newdate = dateFormat.format(Objects.requireNonNull(date));
 
-                        Query queryPhoto = firebaseFirestore.collection("ProfilePhoto").whereEqualTo("userId", uId);
-                        queryPhoto.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        firebaseFirestore.collection("ProfilePhoto").whereEqualTo("userId", uId).addSnapshotListener(new EventListener<QuerySnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
-                                        downloadUrlProfile = (String) snapshot.get("profilePhoto");
+                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                if (error != null) {
+                                    Snackbar.make(binding.getRoot(), Objects.requireNonNull(error.getLocalizedMessage()), Snackbar.LENGTH_LONG).show();
+                                }
+
+                                if (value != null) {
+                                    for (DocumentSnapshot snapshot2 : value.getDocuments()) {
+                                        String downloadUrlProfile = (String) snapshot2.get("profilePhoto");
+
+                                        if (!Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
+                                            Post post = new Post(uName, uSname, downloadUrl, downloadUrlProfile, newdate, comment);
+                                            postArrayList.add(post);
+                                            postAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Snackbar.make(binding.getRoot(), Objects.requireNonNull(e.getLocalizedMessage()), Snackbar.LENGTH_LONG).show();
-                            }
                         });
-
-                        if (!Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
-                            Post post = new Post(uName, uSname, downloadUrl, downloadUrlProfile, newdate, comment);
-                            postArrayList.add(post);
-                            postAdapter.notifyDataSetChanged();
-                        }
                     }
                 }
             }
