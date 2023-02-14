@@ -34,6 +34,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +57,7 @@ public class FeedActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         postArrayList = new ArrayList<>();
+        postArrayList.clear();
 
         getData();
 
@@ -75,6 +77,7 @@ public class FeedActivity extends AppCompatActivity {
 
                 if (value != null) {
                     postArrayList.clear();
+                    postAdapter.notifyDataSetChanged();
                     for (DocumentSnapshot snapshot : value.getDocuments()) {
                         Map<String, Object> objectMap = snapshot.getData();
 
@@ -89,21 +92,21 @@ public class FeedActivity extends AppCompatActivity {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy  HH:mm", Locale.getDefault());
                         String newdate = dateFormat.format(Objects.requireNonNull(date));
 
-                        firebaseFirestore.collection("ProfilePhoto").whereEqualTo("userId", uId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+                        Query queryPhoto = firebaseFirestore.collection("ProfilePhoto").whereEqualTo("userId", uId);
+
+                        queryPhoto.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                if (error != null) {
-                                    Snackbar.make(binding.getRoot(), Objects.requireNonNull(error.getLocalizedMessage()), Snackbar.LENGTH_LONG).show();
-                                }
-
-                                if (value != null) {
-                                    for (DocumentSnapshot snapshot2 : value.getDocuments()) {
-                                        String downloadUrlProfile = (String) snapshot2.get("profilePhoto");
-
-                                        if (!Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
-                                            Post post = new Post(uName, uSname, downloadUrl, downloadUrlProfile, newdate, comment);
-                                            postArrayList.add(post);
-                                            postAdapter.notifyDataSetChanged();
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (!task.getResult().isEmpty()) {
+                                        for (DocumentSnapshot snapshot2 : task.getResult().getDocuments()) {
+                                            String photo = (String) snapshot2.get("profilePhoto");
+                                            if (!Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
+                                                Post post = new Post(uName, uSname, downloadUrl, photo, newdate, comment);
+                                                postArrayList.add(post);
+                                                postAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     }
                                 }
