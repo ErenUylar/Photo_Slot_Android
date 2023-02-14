@@ -1,5 +1,6 @@
 package com.erenuylar.firebaseapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.erenuylar.firebaseapp.databinding.RecyleRowBinding;
 import com.erenuylar.firebaseapp.model.Post;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -27,9 +29,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Postholder> {
         return new Postholder(recyleRowBinding);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull Postholder holder, int position) {
-
+        Picasso.get().load(postArrayList.get(position).downloadUrlProfile).into(holder.recyleRowBinding.imageViewProfile);
+        holder.recyleRowBinding.nameText.setText(postArrayList.get(position).uName + " " + postArrayList.get(position).uSname);
+        holder.recyleRowBinding.dateText.setText(postArrayList.get(position).date);
+        Picasso.get().load(postArrayList.get(position).downloadUrl).into(holder.recyleRowBinding.imageViewPost);
+        holder.recyleRowBinding.commentText.setText(postArrayList.get(position).comment);
     }
 
     @Override

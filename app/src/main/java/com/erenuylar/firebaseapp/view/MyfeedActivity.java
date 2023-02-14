@@ -32,7 +32,6 @@ public class MyfeedActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         postArrayList = new ArrayList<>();
-        postArrayList.clear();
 
         binding.recylerview.setLayoutManager(new LinearLayoutManager(this));
         postAdapter = new PostAdapter(postArrayList);
