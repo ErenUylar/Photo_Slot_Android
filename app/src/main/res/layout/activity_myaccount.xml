@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.MyaccountActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="30dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
+                android:layout_gravity="center"
+                android:onClick="selectProfile"
+                app:srcCompat="@drawable/account_circle" />
+
+            <EditText
+                android:id="@+id/nameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:ems="10"
+                android:fontFamily="@font/zcool_kuaile"
+                android:hint="name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="5dp"
+                android:textColor="@drawable/textcolor"
+                android:textColorHint="@drawable/textcolor" />
+
+            <EditText
+                android:id="@+id/sNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:ems="10"
+                android:fontFamily="@font/zcool_kuaile"
+                android:hint="surname"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="5dp"
+                android:textColor="@drawable/textcolor"
+                android:textColorHint="@drawable/textcolor" />
+
+            <EditText
+                android:id="@+id/postText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:ems="10"
+                android:fontFamily="@font/zcool_kuaile"
+                android:hint="posta"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="5dp"
+                android:textColor="@drawable/textcolor"
+                android:textColorHint="@drawable/textcolor" />
+
+            <EditText
+                android:id="@+id/passText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:ems="10"
+                android:fontFamily="@font/zcool_kuaile"
+                android:hint="password"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="5dp"
+                android:textColor="@drawable/textcolor"
+                android:textColorHint="@drawable/textcolor" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/zcool_kuaile"
+                android:onClick="myInformation"
+                android:text="Save"
+                android:textColor="@drawable/textcolor" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/optionmenu1"
+        android:icon="@drawable/baseline_more"
+        android:title=""
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/option_add"
+                android:icon="@drawable/add_photo"
+                android:title="Add Post" />
+            <item
+                android:id="@+id/option_myAccount"
+                android:icon="@drawable/account_circle"
+                android:title="My Account" />
+            <item
+                android:id="@+id/option_myFeed"
+                android:icon="@drawable/baseline_feed"
+                android:title="My Posts" />
+            <item
+                android:id="@+id/option_logout"
+                android:icon="@drawable/logout"
+                android:title="Sign Out" />
+        </menu>
+    </item>
+</menu>

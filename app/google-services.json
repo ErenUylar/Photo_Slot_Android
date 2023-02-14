@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "487328889727",
+    "project_id": "fir-app-6ca25",
+    "storage_bucket": "fir-app-6ca25.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487328889727:android:7e101bcd60f620285af84a",
+        "android_client_info": {
+          "package_name": "com.erenuylar.firebaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487328889727-ehns9hpur0ifdfp3t1l2474dksberqk7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3HB-v0up3zpzXdA-6cgXiYdzMUTsfqc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487328889727-ehns9hpur0ifdfp3t1l2474dksberqk7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
