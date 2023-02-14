@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.erenuylar.firebaseapp.databinding.RecyleRowBinding;
 import com.erenuylar.firebaseapp.model.Post;
+import com.erenuylar.firebaseapp.view.FeedActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

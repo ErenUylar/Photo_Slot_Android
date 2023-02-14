@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,33 +12,30 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import com.erenuylar.firebaseapp.R;
 import com.erenuylar.firebaseapp.adapter.PostAdapter;
 import com.erenuylar.firebaseapp.databinding.ActivityFeedBinding;
 import com.erenuylar.firebaseapp.model.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -46,6 +44,7 @@ public class FeedActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ArrayList<Post> postArrayList;
     private PostAdapter postAdapter;
+    private Boolean getDataBoolen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +57,27 @@ public class FeedActivity extends AppCompatActivity {
 
         postArrayList = new ArrayList<>();
         postArrayList.clear();
+        getDataBoolen = false;
 
         getData();
+
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
 
         binding.recylerview.setLayoutManager(new LinearLayoutManager(this));
         postAdapter = new PostAdapter(postArrayList);
         binding.recylerview.setAdapter(postAdapter);
+        query();
     }
 
     private void getData() {
-        firebaseFirestore.collection("Posts").orderBy("date", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        Query query = firebaseFirestore.collection("Posts").orderBy("date", Query.Direction.DESCENDING);
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -103,6 +113,7 @@ public class FeedActivity extends AppCompatActivity {
                                         for (DocumentSnapshot snapshot2 : task.getResult().getDocuments()) {
                                             String photo = (String) snapshot2.get("profilePhoto");
                                             if (!Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
+                                                getDataBoolen = true;
                                                 Post post = new Post(uName, uSname, downloadUrl, photo, newdate, comment);
                                                 postArrayList.add(post);
                                                 postAdapter.notifyDataSetChanged();
@@ -116,6 +127,17 @@ public class FeedActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.swipeRefresh.setRefreshing(false);
+    }
+
+    private void query() {
+        if (!getDataBoolen) {
+            binding.emptyImage.setVisibility(View.VISIBLE);
+            binding.emptyText.setVisibility(View.VISIBLE);
+        } else {
+            binding.emptyImage.setVisibility(View.GONE);
+            binding.emptyText.setVisibility(View.GONE);
+        }
     }
 
     @Override

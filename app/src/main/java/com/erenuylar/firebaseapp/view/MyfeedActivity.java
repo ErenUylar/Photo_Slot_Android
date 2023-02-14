@@ -4,17 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.View;
 
-import com.erenuylar.firebaseapp.R;
 import com.erenuylar.firebaseapp.adapter.PostAdapter;
 import com.erenuylar.firebaseapp.databinding.ActivityMyfeedBinding;
 import com.erenuylar.firebaseapp.model.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +38,7 @@ public class MyfeedActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private ArrayList<Post> postArrayList;
     private PostAdapter postAdapter;
+    private Boolean getDataBoolen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +48,31 @@ public class MyfeedActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        getDataBoolen = false;
 
         postArrayList = new ArrayList<>();
         postArrayList.clear();
 
         getData();
 
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+                query();
+            }
+        });
+
         binding.recylerview.setLayoutManager(new LinearLayoutManager(this));
         postAdapter = new PostAdapter(postArrayList);
         binding.recylerview.setAdapter(postAdapter);
+        query();
     }
 
     private void getData() {
-        firebaseFirestore.collection("Posts").orderBy("date", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        Query query = firebaseFirestore.collection("Posts").orderBy("date", Query.Direction.DESCENDING);
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -96,9 +108,15 @@ public class MyfeedActivity extends AppCompatActivity {
                                         for (DocumentSnapshot snapshot2 : task.getResult().getDocuments()) {
                                             String photo = (String) snapshot2.get("profilePhoto");
                                             if (Objects.equals(uMail, Objects.requireNonNull(auth.getCurrentUser()).getEmail())) {
+                                                getDataBoolen = true;
+                                                query();
                                                 Post post = new Post(uName, uSname, downloadUrl, photo, newdate, comment);
                                                 postArrayList.add(post);
                                                 postAdapter.notifyDataSetChanged();
+                                            } else {
+                                                getDataBoolen = false;
+                                                query();
+                                                getData();
                                             }
                                         }
                                     }
@@ -109,5 +127,16 @@ public class MyfeedActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.swipeRefresh.setRefreshing(false);
+    }
+
+    private void query() {
+        if (!getDataBoolen) {
+            binding.emptyImage.setVisibility(View.VISIBLE);
+            binding.emptyText.setVisibility(View.VISIBLE);
+        } else {
+            binding.emptyImage.setVisibility(View.GONE);
+            binding.emptyText.setVisibility(View.GONE);
+        }
     }
 }
