@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,12 +33,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Postholder> {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull Postholder holder, int position) {
+    public void onBindViewHolder(@NonNull Postholder holder, @SuppressLint("RecyclerView") int position) {
         Picasso.get().load(postArrayList.get(position).downloadUrlProfile).into(holder.recyleRowBinding.imageViewProfile);
         holder.recyleRowBinding.nameText.setText(postArrayList.get(position).uName + " " + postArrayList.get(position).uSname);
         holder.recyleRowBinding.dateText.setText(postArrayList.get(position).date);
         Picasso.get().load(postArrayList.get(position).downloadUrl).into(holder.recyleRowBinding.imageViewPost);
         holder.recyleRowBinding.commentText.setText(postArrayList.get(position).comment);
+        holder.recyleRowBinding.imageViewPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(holder.itemView.getContext(), postArrayList.get(position).uName, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
